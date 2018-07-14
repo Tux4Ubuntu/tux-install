@@ -41,45 +41,31 @@ STEPCOUNTER=false # Sets to true if user choose to install Tux Everywhere
 OS_VERSION="";
 # Here we check if OS is supported
 # More info on other OSes regarding plymouth: http://brej.org/blog/?p=158
-if [[ `lsb_release -rs` == "16.04" ]]
-then
-    # The plymouth dir was moved in one update, therefore we have prepared for this one here
-	plymouth_dir="/usr/share/plymouth"
-    OS_VERSION="16.04"
-elif [[ `lsb_release -rs` == "16.10" ]]
-    plymouth_dir="/usr/share/plymouth"
-    OS_VERSION="16.10"
-then
-	plymouth_dir="/usr/share/plymouth"
-else
-	echo "Sorry! We haven't tried installing Tux4Ubuntu on your Linux distrubtion."
-    echo "Make sure you have the latest version at http://tux4ubuntu.blogspot.com"	
-    echo "(Or fork/edit our project/install-ubuntu.sh for your system, and then make a"
-    echo "pull request/send it to us so that more people can use it)"
-    echo ""
-    echo "Want to go ahead anyway? (Can be a bumby ride, but it might work flawless)"
-    echo ""
-    echo "(Type 1 or 2, then press ENTER)"            
-    select yn in "Yes" "No"; do
-        case $yn in
-            Yes ) printf "\033c"
-                echo "Ahh, a brave one! Tux salutes you!"
-                echo "(If you get any error message, copy/paste on our website/stackoverflow"
-                echo "and if it works, please write a comment on our start page and let us know)"
-                echo ""
-                read -n1 -r -p "Press any key to continue..." key
-               	# We set the plymouth directory here 
-                plymouth_dir="/usr/share/plymouth"
-                break;;
-            No ) printf "\033c"
-                echo "Feel free to try when you're ready. Tux will be waiting."
-                echo ""
-                read -n1 -r -p "Press any key to continue..." key
-                exit
-                break;;
-        esac
-    done
-fi
+
+select yn in "Yes" "No"; do
+    case $yn in
+        Yes ) printf "\033c"
+            header "Setting up INSTALLATION" "$1"
+            echo "Are you running UBUNTU and the lastest LTS release UBUNTU 18.04?"
+            echo "(if not, google the advantages of using the latest LTS for production use)"
+            # We set the plymouth directory here 
+            plymouth_dir="/usr/share/plymouth"
+            OS_VERSION="18.04"
+            break;;
+        No ) printf "\033c"
+            header "Tux suggests the MANUAL INSTALLATION method" "$1"
+            echo "If you're not running the latest UBUNTU LTS or if you're running another Linux based OS"
+            echo "you're not out of luck (TUX loves you!)"
+            echo ""
+            echo "Just read the manual install instructions at:"
+            echo "https://tux4ubuntu.org"
+            echo ""
+            read -n1 -r -p "Press any key to continue..." key
+            exit
+            break;;
+    esac
+done
+
 
 function change_boot_loader { 
     printf "\033c"
@@ -168,45 +154,11 @@ function change_boot_logo {
                 printf "\033c"
                 header "Adding Tux as BOOT LOGO" "$1"
                 check_sudo
-                
-                if [[ OS_VERSION == "16.04" ]]; then
-                    # Workaround what we think is an Ubuntu Plymouth bug that doesn't seem to allow foreign plymouth themes
-                    # so instead of simply sudo cp -r tux-plymouth-theme/ $plymouth_dir/themes/tux-plymouth-theme we 
-                    # have to (6 steps):
-                        
-                    # 1) Add other themes through the apt-get package 'plymouth-themes' that seem to work as well as 'xclip'
-                    # -package to successfully copy the internals of tux.script, tux.plymouth to a copy of the plymouth-themes's
-                    # 'script'-theme. To do this, we first check if xclip and plymouth-themes is installed, and if not, we ask the user if they
-                    # are okey with installing them. As found here: http://askubuntu.com/questions/319307/reliably-check-if-a-package-is-installed-or-not
-                    install_if_not_found "plymouth-themes xclip"
 
-                    # 2) Copy one of these themes, the theme called script.
-                    sudo cp -r $plymouth_dir/themes/script $plymouth_dir/themes/tux-plymouth-theme;  
-                    
-                    # 3) Add tux-plymouth-theme files
-                    sudo cp -r tux-plymouth-theme/* $plymouth_dir/themes/tux-plymouth-theme;
-                    
-                    # 4) Copy the internals of our files to existing using xclip
-                    sudo xclip $plymouth_dir/themes/tux-plymouth-theme/tux.script;
-                    sudo bash -c '> '$plymouth_dir'/themes/tux-plymouth-theme/script.script';
-                    xclip -out | sudo tee -a $plymouth_dir/themes/tux-plymouth-theme/script.script;
-                    sudo xclip $plymouth_dir/themes/tux-plymouth-theme/tux.plymouth;
-                    sudo bash -c '> '$plymouth_dir'/themes/tux-plymouth-theme/script.plymouth';
-                    xclip -out | sudo tee -a $plymouth_dir/themes/tux-plymouth-theme/script.plymouth;                          
-                    
-                    # 5) Remove our own files
-                    sudo rm $plymouth_dir/themes/tux-plymouth-theme/tux.plymouth;
-                    sudo rm $plymouth_dir/themes/tux-plymouth-theme/tux.script;
-                    
-                    # 6) And rename the newly created copies
-                    sudo mv $plymouth_dir/themes/tux-plymouth-theme/script.script $plymouth_dir/themes/tux-plymouth-theme/tux.script
-                    sudo mv $plymouth_dir/themes/tux-plymouth-theme/script.plymouth $plymouth_dir/themes/tux-plymouth-theme/tux.plymouth
-                else
-                    sudo cp -r tux-plymouth-theme $plymouth_dir/themes/
-                fi
+                sudo cp -r tux-plymouth-theme $plymouth_dir/themes/
 
                 # Then we can add it to default.plymouth and update update-initramfs accordingly
-                sudo update-alternatives --install $plymouth_dir/themes/default.plymouth default.plymouth $plymouth_dir/themes/tux-plymouth-theme/tux.plymouth 100;
+                sudo update-alternatives --install $plymouth_dir/themes/default.plymouth default.plymouth $plymouth_dir/themes/tux-plymouth-theme/tux-plymouth-theme.plymouth 100;
                 printf "\033c"
                 header "Adding Tux as BOOT LOGO" "$1"
                 echo "Below you will see a list with all themes available to choose tux in the "
