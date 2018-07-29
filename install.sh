@@ -33,10 +33,10 @@ declare -a arr=("tux-install" "tux-plymouth-theme" "tux-desktop-theme" "tux-icon
 # Now we loop through the above arra
 for gh_repo in "${arr[@]}"
 do
-  wget -O "/tmp/$gh_repo.tar.gz" \
-  https://github.com/Tux4Ubuntu/$gh_repo/archive/master.tar.gz
-  echo "=> Unpacking archive ..."
-  tar -xzf "/tmp/$gh_repo.tar.gz" -C "$temp_dir"
+#  wget -O "$temp_dir/$gh_repo.tar.gz" \
+#  https://github.com/Tux4Ubuntu/$gh_repo/archive/master.tar.gz
+#  echo "=> Unpacking archive ..."
+#  tar -xzf "$temp_dir/$gh_repo.tar.gz" -C "$temp_dir"
   echo "$gh_repo"
   echo "$temp_dir"
 done
@@ -45,5 +45,7 @@ done
 wget -qO- https://tux4ubuntu.org/install-counter/ &> /dev/null
 
 echo "=> Launching installer..."
-$temp_dir/tux-install-master/install-tux4ubuntu.sh
 
+# LOCAL/GITHUB FOLDER
+#$temp_dir/tux-install-master/tux4ubuntu-menu.sh $temp_dir
+~/Projects/Tux4Ubuntu/src/tux-install/tux4ubuntu-menu.sh $temp_dir

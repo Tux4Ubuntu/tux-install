@@ -2,33 +2,10 @@
 # 
 # install-ubuntu.sh - Tux4Ubuntu Installer
 #                                                   
-# Copyright (C) 2016 Tux4Ubuntu Initiative <http://tux4ubuntu.blogspot.com>
-#
-# Permission is hereby granted, free of charge, 
-# to any person obtaining a copy of this software and 
-# associated documentation files (the "Software"), to 
-# deal in the Software without restriction, including 
-# without limitation the rights to use, copy, modify, 
-# merge, publish, distribute, sublicense, and/or sell 
-# copies of the Software, and to permit persons to whom 
-# the Software is furnished to do so, 
-# subject to the following conditions:
-#
-# The above copyright notice and this permission notice 
-# shall be included in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
-# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
-# ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-# 
-# Written and designed by: Tuxedo Joe <http://github.com/tuxedojoe>
-# for The Tux4Ubuntu Initiative <http://tux4ubuntu.blogspot.com>
+# Copyright (C) 2018 Tux4Ubuntu <https://tux4ubuntu.org>
 #
 # For CREDITS AND ATTRIBUTION see README 
+# For LICENSE see LICENSE :)
 
 # Change directory to same as script is running in
 cd "$(dirname "$0")"
@@ -37,71 +14,22 @@ set -e
 # Cleans the screen
 printf "\033c"
 # Set global values
-STEPCOUNTER=false # Sets to true if user choose to install Tux Everywhere
+STEPCOUNTER=false # Changes to true if user choose to install Tux Everywhere
 OS_VERSION="";
+TEMP_DIR="";
 # Here we check if OS is supported
 # More info on other OSes regarding plymouth: http://brej.org/blog/?p=158
 
-
 # Define functions first
 
-function change_boot_loader { 
+function change_boot_loader {
     printf "\033c"
-    header "Adding Tux to BOOT LOADER" "$1"
-    echo "DO NOT INSTALL IF YOU ARE ONLY RUNNING ONE OPERATIVE SYSTEM"
-    echo "(since this is a tool for dual booting)"
-    echo ""
-    RED='\033[0;31m'
-    NC='\033[0m' # No Color
-    printf "${RED}WARNING! Before you continue backup all your data${NC}\n"                       
-    echo ""
-    echo "Do you understand that changing bootloader theme (and potentially the boot"
-    echo "loader as well if you don't have rEFInd installed) is not without risk and"
-    echo "that we can't be hold responsible if you proceed? (Our website and internet"
-    echo "can help but nothing is 100% safe)"
-    echo ""
-    check_sudo
-    echo "(Type 1 or 2, then press ENTER)"
-    select yn in "Yes" "No"; do
-        case $yn in
-            Yes )
-                if [ -d /sys/firmware/efi ]
-                then 
-                    # The rEFInd ppa is not registered. Ask if user wants it installed.
-                    echo "Installing rEFInd bootloader"
-                    sudo apt-add-repository ppa:rodsmith/refind
-                    sudo apt-get update
-                    # Check if refind is installed
-                    install_if_not_found "refind"
-                    echo "Initiating to copy folder tux-refind-theme."
-                    check_sudo
-                    sudo rm -rf /boot/efi/EFI/refind/themes/tux-refind-theme
-                    sudo mkdir -p /boot/efi/EFI/refind/themes
-                    sudo cp -rf tux-refind-theme /boot/efi/EFI/refind/themes/tux-refind-theme
-                    # Here we add a last line if it not already exists (If other themes exists doesn't matter since our line ends up last and will therefore be used)
-                    sudo grep -q -F 'include themes/tux-refind-theme/theme.conf' /boot/efi/EFI/refind/refind.conf || echo 'include themes/tux-refind-theme/theme.conf' | sudo tee -a /boot/efi/EFI/refind/refind.conf
-                    echo "Successfully copied 'tux-refind-theme' to your rEFInd themes folder."
-                else
-                    printf "\033c"
-                    header "Adding Tux to BOOT LOADER" "$1"
-                    echo "BIOS boot noticed."
-                    echo ""
-                    echo "If you're running a newer system that support EFI, check your BIOS settings."
-                    echo "Switching from Legacy to UEFI/EFI might do the trick and will enable a lot"
-                    echo "more customization to your boot loader. But if that's not possible, you can"
-                    echo "still add Tux to everywhere else."
+    echo "$TEMP_DIR"
+    header "Adding Tux as BOOT LOGO" "$1"
 
-
-                fi
-                break;;
-            No ) printf "\033c"
-                echo "It's not that dangerous though! Feel free to try when you're ready. Tux will be waiting..."
-
-                break;;
-        esac
-    done
-    echo ""
-    read -n1 -r -p "Press any key to continue..." key
+    # LOCAL/GITHUB FOLDER
+    #$TEMP_DIR/tux-refind-theme-master/install.sh $1
+    ~/Projects/Tux4Ubuntu/src/tux-refind-theme/install.sh $1
 }
 
 function change_boot_logo {
@@ -308,7 +236,7 @@ function change_wallpaper {
                 # Uncomment this and comment the other for faster downloading when developing
                 #gh_repo="tux4ubuntu"
                 gh_repo="tux4ubuntu-wallpapers"
-                temp_dir=$(mktemp -d)
+                pic_temp_dir=$(mktemp -d)
                 echo "=> Getting the latest version from GitHub ..."
                 wget -O "/tmp/$gh_repo.tar.gz" \
                 https://github.com/tuxedojoe/$gh_repo/archive/master.tar.gz
@@ -888,7 +816,9 @@ function header {
 
 # After all the above functions been set we're ready to run the scripts
 
-header "Setting up INSTALLATION" "$1"
+TEMP_DIR="$1"
+
+header "Setting up INSTALLATION"
 echo "Are you running UBUNTU and the lastest LTS release UBUNTU 18.04?"
 echo "(if not LTS, google the advantages of using the latest LTS for production use)"
 
@@ -913,16 +843,14 @@ select yn in "Yes" "No"; do
     esac
 done
 
-
-
 while :
 do
     clear
     # Menu system as found here: http://stackoverflow.com/questions/20224862/bash-script-always-show-menu-after-loop-execution
     cat<<EOF    
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ TUX 4 UBUNTU ver 1.3                            © 2016 Tux4Ubuntu Initiative ║
-║ Let's Bring Tux to Ubuntu                     http://tux4ubuntu.blogspot.com ║
+║ TUX 4 UBUNTU ver 2.0                                       © 2018 Tux4Ubuntu ║
+║ Let's Bring Tux to Ubuntu                             https://tux4ubuntu.org ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
 ║   Where do you want Tux? (Type in one of the following numbers)              ║
