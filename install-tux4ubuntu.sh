@@ -42,30 +42,8 @@ OS_VERSION="";
 # Here we check if OS is supported
 # More info on other OSes regarding plymouth: http://brej.org/blog/?p=158
 
-select yn in "Yes" "No"; do
-    case $yn in
-        Yes ) printf "\033c"
-            header "Setting up INSTALLATION" "$1"
-            echo "Are you running UBUNTU and the lastest LTS release UBUNTU 18.04?"
-            echo "(if not, google the advantages of using the latest LTS for production use)"
-            # We set the plymouth directory here 
-            plymouth_dir="/usr/share/plymouth"
-            OS_VERSION="18.04"
-            break;;
-        No ) printf "\033c"
-            header "Tux suggests the MANUAL INSTALLATION method" "$1"
-            echo "If you're not running the latest UBUNTU LTS or if you're running another Linux based OS"
-            echo "you're not out of luck (TUX loves you!)"
-            echo ""
-            echo "Just read the manual install instructions at:"
-            echo "https://tux4ubuntu.org"
-            echo ""
-            read -n1 -r -p "Press any key to continue..." key
-            exit
-            break;;
-    esac
-done
 
+# Define functions first
 
 function change_boot_loader { 
     printf "\033c"
@@ -906,6 +884,36 @@ function header {
     echo "╚══════════════════════════════════════════════════════════════════════════════╝"
     echo ""
 }
+
+
+# After all the above functions been set we're ready to run the scripts
+
+header "Setting up INSTALLATION" "$1"
+echo "Are you running UBUNTU and the lastest LTS release UBUNTU 18.04?"
+echo "(if not LTS, google the advantages of using the latest LTS for production use)"
+
+select yn in "Yes" "No"; do
+    case $yn in
+        Yes ) printf "\033c"
+            # We set the plymouth directory here 
+            plymouth_dir="/usr/share/plymouth"
+            OS_VERSION="18.04"
+            break;;
+        No ) printf "\033c"
+            header "Tux suggests the MANUAL INSTALLATION method" "$1"
+            echo "If you're not running the latest UBUNTU LTS or if you're running another Linux"
+            echo "based OS you're not out of luck (TUX loves you!)"
+            echo ""
+            echo "Just read the manual install instructions at:"
+            echo "https://tux4ubuntu.org"
+            echo ""
+            read -n1 -r -p "Press any key to continue..." key
+            exit
+            break;;
+    esac
+done
+
+
 
 while :
 do

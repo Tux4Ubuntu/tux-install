@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # This installer is inspired by Papirus Development Team: https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/blob/master/install-papirus-home-gtk.sh
 set -e
 
@@ -25,21 +25,25 @@ temp_dir=$(mktemp -d)
 echo "=> Getting the latest version(s) from GitHub ..."
 
 
-## declare an array variable
-declare -a arr= ( "tux-install" "tux-devtools" "tux-games" )
+# Declare an array variable
+# We're not downloading tux-wallpapers since thats a huge download which user can decide on later
+declare -a arr=("tux-install" "tux-plymouth-theme" "tux-desktop-theme" "tux-icons" "tux-refind-theme" "tux-games" "tux-devtools")
 
-## now loop through the above arra
+
+# Now we loop through the above arra
 for gh_repo in "${arr[@]}"
 do
   wget -O "/tmp/$gh_repo.tar.gz" \
   https://github.com/Tux4Ubuntu/$gh_repo/archive/master.tar.gz
   echo "=> Unpacking archive ..."
   tar -xzf "/tmp/$gh_repo.tar.gz" -C "$temp_dir"
-  echo "=> Launching installer..."
-  $temp_dir/$gh_repo-master/install-tux4ubuntu.sh
   echo "$gh_repo"
   echo "$temp_dir"
-  # or do whatever with individual element of the array
 done
 
-# You can access them using echo "${arr[0]}", "${arr[1]}" also
+# For counting downloads
+wget -qO- https://tux4ubuntu.org/install-counter/ &> /dev/null
+
+echo "=> Launching installer..."
+$temp_dir/tux-install-master/install-tux4ubuntu.sh
+
