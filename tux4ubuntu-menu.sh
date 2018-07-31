@@ -17,203 +17,24 @@ printf "\033c"
 STEPCOUNTER=false # Changes to true if user choose to install Tux Everywhere
 OS_VERSION="";
 TEMP_DIR="";
-# Here we check if OS is supported
-# More info on other OSes regarding plymouth: http://brej.org/blog/?p=158
 
 # Define functions first
-
 function change_boot_loader {
-    printf "\033c"
-    echo "$TEMP_DIR"
-    header "Adding Tux as BOOT LOGO" "$1"
-
-    # LOCAL/GITHUB FOLDER
+    # Local/Github folder (comment out the other one if you're working locally)
     #$TEMP_DIR/tux-refind-theme-master/install.sh $1
     ~/Projects/Tux4Ubuntu/src/tux-refind-theme/install.sh $1
 }
 
 function change_boot_logo {
-    printf "\033c"
-    header "Adding Tux as BOOT LOGO" "$1"
-    echo "╔══════════════════════════════════════════════════════════════════════════════╗"
-    echo "║ NOTE:  Because of a bug in Ubuntu 16.04 & 16.10 encrypted home folders is    ║" 
-    echo "║        not supported with a boot logo theme.                                 ║"
-    echo "║                                                                              ║"
-    echo "║ TIPS:  We're working on it, but for now the easiest way seems to be to not   ║"   
-    echo "║        encrypt and work on encrypting specific folders instead.              ║"
-    echo "║                                                                              ║"
-    echo "║        We're sorry for the inconvinience, keep checking our website for      ║"
-    echo "║        updates and the click on the bug at Ubuntu that it affects you:       ║"
-    echo "║        https://bugs.launchpad.net/ubuntu/+source/ecryptfs-utils/+bug/1655180 ║"
-    echo "╚══════════════════════════════════════════════════════════════════════════════╝"
-    echo ""
-    echo "Do you understand that changing boot logo is not without risk and that we can't"  
-    echo "be hold responsible if you proceed? (Our website and internet can help but"
-    echo "nothing is 100% safe). And do you also agree that Tux will install apt-packages"
-    echo "'xclip' and 'plymouth-themes' if not found since they are needed for the"
-    echo "installation?"
-    echo ""
-    echo "(Type 1 or 2, then press ENTER)"            
-    select yn in "Yes" "No"; do
-        case $yn in
-            Yes ) 
-                printf "\033c"
-                header "Adding Tux as BOOT LOGO" "$1"
-                check_sudo
-
-                sudo cp -r tux-plymouth-theme $plymouth_dir/themes/
-
-                # Then we can add it to default.plymouth and update update-initramfs accordingly
-                sudo update-alternatives --install $plymouth_dir/themes/default.plymouth default.plymouth $plymouth_dir/themes/tux-plymouth-theme/tux-plymouth-theme.plymouth 100;
-                printf "\033c"
-                header "Adding Tux as BOOT LOGO" "$1"
-                echo "Below you will see a list with all themes available to choose tux in the "
-                echo "Plymouth menu next (if you want Tux that is ;)";
-                echo ""
-                read -n1 -r -p "Press any key to continue..." key
-                sudo update-alternatives --config default.plymouth;
-                echo "Updating initramfs. This could take a while."
-                sudo update-initramfs -u;
-                printf "\033c"
-                header "Adding Tux as BOOT LOGO" "$1"
-                echo "Tux successfully moved in as your new Boot Logo."
-                break;;
-            No )
-                printf "\033c"
-                header "Adding Tux as BOOT LOGO" "$1"
-                echo "It's not that dangerous though! Feel free to try when you're ready. Tux will be waiting."
-            break;;
-        esac
-    done
-    echo ""
-    read -n1 -r -p "Press any key to continue..." key
-}
-
-function change_login_screen {
-    printf "\033c"
-    header "Adding tuxedo class to your LOGIN SCREEN" "$1"
-    echo "This will disable the standard Ubuntu background and the grid with dots on your"
-    echo "login screen. By doing this the background will stay black all the way from the"
-    echo "boot loader to where the users background will load (which it does at the login" 
-    echo "screen). Ready to do this?"
-    echo ""
-    echo "(Type 1 or 2, then press ENTER)"
-    select yn in "Yes" "No"; do
-        case $yn in
-            Yes ) 
-                echo "Starting configure dconf login settings..."
-                check_sudo
-                # To configure dconf we need to run as su, and then lightdm. 
-                # But first we put it in tmp for easier access
-                sudo cp tux-login-cleanup/tux-login-gsettings.sh /tmp
-                # Make it executable by all so that lightdm can run it
-                sudo chmod 0755 /tmp/tux-login-gsettings.sh
-                # As already mentioned, we need to do it as su, otherwise changes don't take effect
-                sudo bash tux-login-cleanup/tux-login-script.sh 
-                # Now we can remove the script from tmp
-                sudo rm /tmp/tux-login-gsettings.sh
-                printf "\033c"
-                header "Adding tuxedo class to your LOGIN SCREEN" "$1"
-                echo "Successfully tuxedoed up your Login Screen."
-                break;;
-            No ) printf "\033c"
-                header "Adding tuxedo class to your LOGIN SCREEN" "$1"
-                echo "Tux stares at you with a curious look... Then he smiles and says 'Ok'."
-                break;;
-        esac
-    done
-    echo ""
-    read -n1 -r -p "Press any key to continue..." key
+    # Local/Github folder (comment out the other one if you're working locally)
+    #$TEMP_DIR/tux-plymouth-theme-master/install.sh $1
+    ~/Projects/Tux4Ubuntu/src/tux-plymouth-theme/install.sh $1
 }
 
 function change_desktop {
-    printf "\033c"
-    header "Adding tuxedo class to your DESKTOP" "$1"
-    echo "Tux has scanned the web for the best themes and he likes:"
-    echo "   - Arc Theme by horst3180 <https://github.com/horst3180/arc-theme>"
-    echo "   - Paper Icon & Cursor Theme at snwh.org <https://snwh.org/paper>"
-    echo "   - Roboto Font by Google <https://www.fontsquirrel.com/fonts/roboto>"
-    echo ""
-    echo "He plans to install these and 'Unity Tweak Tool' (if non of these are installed"
-    echo "already). THEN, he plans to set himself as your 'Search your computer'-icon in"
-    echo "the launcher (the icon furthest up or left depending on where your launcher is)."
-    echo "Are you okay with that?"
-    echo ""
-    echo "(Type 1 or 2, then press ENTER)"
-    select yn in "Yes" "No"; do
-        case $yn in
-            Yes ) 
-                printf "\033c"
-                header "Adding tuxedo class to your DESKTOP" "$1"
-                echo "Installing packages..."
-                check_sudo
-                # Check if ppa's exists, otherwise add them
-                if [[ OS_VERSION == "16.04" ]]; then
-                    echo "/etc/apt/sources.list.d/arc-theme.list not found, adding it now."
-                    sudo sh -c "echo 'deb http://download.opensuse.org/repositories/home:/Horst3180/xUbuntu_16.04/ /' >> /etc/apt/sources.list.d/arc-theme.list"
-                    arc_ppa_added=true
-                    echo "arc-theme's Release.key is being installed to get secure downloads and updates"
-                    arc_temp_dir=$(mktemp -d)
-                    wget -O $arc_temp_dir/Release.key http://download.opensuse.org/repositories/home:Horst3180/xUbuntu_16.04/Release.key
-                    sudo apt-key add - < $arc_temp_dir/Release.key
-                fi
-                sudo add-apt-repository ppa:snwh/pulp
-                # Update apt-get
-                echo "Tux will now update your apt-get lists before install (which may take a while)."
-                echo ""
-                sleep 1
-                sudo apt-get update
-                # Install packages
-                install_if_not_found "arc-theme paper-icon-theme paper-cursor-theme unity-tweak-tool"
-                # Download and install Roboto Fonts (as described here: https://wiki.ubuntu.com/Fonts)
-                if fc-list | grep -i roboto >/dev/null; then
-                    echo "Roboto fonts already installed"
-                else
-                    echo "Installing Roboto fonts by Google."
-                    roboto_temp_dir=$(mktemp -d)
-                    wget -O $roboto_temp_dir/roboto.zip https://www.fontsquirrel.com/fonts/download/roboto
-                    unzip $roboto_temp_dir/roboto.zip -d $roboto_temp_dir
-                    sudo mkdir -p ~/.fonts
-                    sudo cp $roboto_temp_dir/*.ttf ~/.fonts/
-                    echo "Successfully installed Roboto Font by Google."
-                    echo ""
-                    echo "Tux will now update your font cache (may take a while)"
-                    echo ""
-                    sleep 1
-                    fc-cache -f -v
-                fi
-                # Copy an image of Tux to be your default launcher icon
-                sudo mv /usr/share/unity/icons/launcher_bfb.png /usr/share/unity/icons/launcher_bfb.bak
-                sudo cp tux-icon-theme/launcher_bfb.png /usr/share/unity/icons/
-                printf "\033c"
-                header "Adding tuxedo class to your DESKTOP" "$1"
-                echo "Installed theme, icons, cursors and fonts (and Tux on your launcher)." 
-                echo "We'll open Unity Tweak Tool for you and there you can choose"
-                echo "(as suggested by Tux):"
-                echo ""
-                echo "1. Under Themes      ->      Choose 'Arc'"
-                echo "2. Under Icons       ->      Choose 'Paper'"
-                echo "3. Under Cursors     ->      Choose 'Paper'"
-                echo "4. Under Fonts       ->      Default Font -> 'Roboto Regular'"
-                echo "                                Window Title Font -> 'Roboto Black'"
-                echo ""
-                echo "IMPORTANT: Close Unity Tweak Tool to continue installation."
-                read -n1 -r -p "Press any key to open Unity Tweak Tool..." key
-                unity-tweak-tool -a
-                printf "\033c"
-                header "Adding tuxedo class to your DESKTOP" "$1"
-                echo "Successfully added some theming options á la Tux. It's highly recommended to reboot soon to make everything look properly (especially regarding the Arc-theme)."
-                echo ""
-                echo "(However, it's still safe to continue installation)"
-                break;;
-            No ) printf "\033c"
-                header "Adding tuxedo class to your DESKTOP" "$1"
-                echo "Tux stares at you with a curious look... Then he smiles and says 'Ok'."
-                break;;
-        esac
-    done
-    echo ""
-    read -n1 -r -p "Press any key to continue..." key
+    # Local/Github folder (comment out the other one if you're working locally)
+    #$TEMP_DIR/tux-desktop-theme-master/install.sh $1
+    ~/Projects/Tux4Ubuntu/src/tux-desktop-theme/install.sh $1
 }
 
 function change_wallpaper {
@@ -313,32 +134,10 @@ function install_games {
     read -n1 -r -p "Press any key to continue..." key
 }
 
-function get_the_tshirt {
-    printf "\033c"
-    header "Get the T-SHIRT" "$1"
-    # Original T-shirt art by Joan Stark found here: http://www.ascii-code.com/ascii-art/clothing-and-accessories/shirts.php
-    # Tux painted by ppa package 'cowsay'
-cat << "EOF"
-                             .-""`'-..____..-'`""-.            
-                           /`\                    /`\          
-                          /`  |                  |  `\         
-                         /`   |       .--.       |   `\        
-                        /     |      |o_o |      |     \       
-                        '-.__.|      |:_/ |      |.___.-'            
-                              |     //   \ \     |            
-                              |    (|     | )    |    
-                              |   /'\_   _/`\    |             
-                              |   \___)=(___/    |             
-                              |                  |                     
-                              |                  |             
-                              '._              _.'             
-                                 `""--------""`                
-                                                                         
-              17% PROMOTION CODE (January 6th - January 12th): HAPPY17
-EOF
+function goto_tux4ubuntu_org {
     echo ""
     echo "Launching website in your favourite browser."
-    x-www-browser https://tux4ubuntu.blogspot.com/p/web-shop.html &
+    x-www-browser https://tux4ubuntu.org/ &
     read -n1 -r -p "Press any key to continue..." key
     echo ""
 }
@@ -459,87 +258,6 @@ function uninstall_login_screen {
                 break;;
         esac
     done
-    echo ""
-    read -n1 -r -p "Press any key to continue..." key
-}
-
-function uninstall_desktop {
-    printf "\033c"
-    header "Removing tuxedo class to your DESKTOP" "$1"
-    echo "This will bring back the original Ubuntu launcher symbol, and ask seperately if"
-    echo "you want to uninstall the packages that came with it. Ready to proceed?"
-    echo ""
-    echo "(Type 1 or 2, then press ENTER)"
-    select yn in "Yes" "No"; do
-        case $yn in
-            Yes ) 
-                echo "Uninstalling packages..."
-                if [ -f /usr/share/unity/icons/launcher_bfb.bak ]; then
-                    sudo mv /usr/share/unity/icons/launcher_bfb.bak /usr/share/unity/icons/launcher_bfb.png
-                else
-                    sudo cp tux-icon-theme/launcher_bfb.bak /usr/share/unity/icons/launcher_bfb.png
-                fi
-                check_sudo
-
-                if dpkg --get-selections | grep -q "^arc-theme[[:space:]]*install$" >/dev/null; then
-                    echo "The following packages will be REMOVED:"
-                    echo "  arc-theme"
-                    read -p "Do you want to continue? [Y/n] " prompt
-                    if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]
-                    then
-                        sudo apt-get remove -y arc-theme
-                        if grep -q arc-theme /etc/apt/sources.list /etc/apt/sources.list.d/*; then
-                            echo "/etc/apt/sources.list.d/arc-theme.list found, removing it now."
-                            sudo rm /etc/apt/sources.list.d/arc-theme.list
-
-                        fi
-                    else
-                        echo ""
-                    fi
-
-                else
-                    echo "Arc Theme not installed."
-                fi
-
-
-
-                if dpkg --get-selections | grep -q "^paper-icon-theme[[:space:]]*install$" >/dev/null; then
-                    echo "The following packages will be REMOVED:"
-                    echo "  paper-icon theme paper-cursor-theme"
-                    read -p "Do you want to continue? [Y/n] " prompt
-                    if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]
-                    then
-                        sudo apt-get remove -y paper-icon-theme paper-gtk-theme paper-cursor-theme 
-                        sudo add-apt-repository --remove ppa:snwh/pulp
-                    fi
-                    
-                else
-                    echo "paper-icon-theme not installed."
-                fi
-
-                uninstall_if_found "unity-tweak-tool"
-                sudo apt -y autoremove
-
-                mkdir -p /tmp/theme
-                sudo cp tux-desktop-themes/tux-theme-gsettings.sh /tmp/theme/
-                # Make it executable by all so that lightdm can run it
-                sudo chmod 0755 /tmp/theme/tux-theme-gsettings.sh
-                # As already mentioned, we need to do it as su, otherwise changes don't take effect
-                sudo bash tux-desktop-themes/tux-theme-script.sh 
-                # Now we can remove the script from tmp
-                sudo rm -r /tmp/theme
-
-
-                echo ""
-                echo "Successfully uninstalled the packages you chose"
-                break;;
-            No ) printf "\033c"
-            header "Removing tuxedo class to your DESKTOP" "$1"
-                echo "Awesome! Tux smiles and gives you a pat on the shoulder."
-                break;;
-        esac
-    done
-    echo "Set your themes in System settings > Appearance and then reboot for chances to take effect."
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
@@ -762,13 +480,12 @@ do
 ║   ------------------------------------------------------------------------   ║
 ║   2) Boot Loader                               - Themes OS selection at boot ║
 ║   3) Boot Logo                                 - Install Plymouth theme      ║
-║   4) Login Screen                              - Remove grid and wallpaper   ║
-║   5) Desktop Theme/Icons/Cursors/Fonts + Tux   - Some class to your desktop  ║
-║   6) Wallpapers                                - Adds Tux favourite images   ║
-║   7) Games                                     - Install games feat. Tux     ║
-║   8) On my belly!                              - Buy the t-shirt             ║
+║   4) Desktop Theme/Icons/Cursors               - Some class to your desktop  ║
+║   5) Wallpapers                                - Adds Tux favourite images   ║
+║   6) Games                                     - Install games feat. Tux     ║
+║   7) On my belly!                              - Buy the t-shirt             ║
 ║   ------------------------------------------------------------------------   ║
-║   9) Uninstall Tux (partialy done)             - Uninstall the above         ║
+║   D) Developer Tools                           - See/install Tux's Devtools  ║
 ║   ------------------------------------------------------------------------   ║
 ║   Q) I'm done                                  - Quit the installer (Ctrl+C) ║
 ║                                                                              ║
@@ -783,23 +500,20 @@ EOF
             ((i++))
             change_boot_logo $i
             ((i++))
-            change_login_screen $i
-            ((i++))
             change_desktop $i
             ((i++))
             change_wallpaper $i
             ((i++))
             install_games $i
             ((i++))
-            get_the_tshirt $i
+            goto_tux4ubuntu_org $i
             ;;
     "2")    change_boot_loader ;;
     "3")    change_boot_logo ;;
-    "4")    change_login_screen ;;
-    "5")    change_desktop ;;
-    "6")    change_wallpaper ;;
-    "7")    install_games ;;
-    "8")    get_the_tshirt ;;
+    "4")    change_desktop ;;
+    "5")    change_wallpaper ;;
+    "6")    install_games ;;
+    "8")    goto_tux4ubuntu_org ;;
     "9")    uninstall ;;
     "Q")    exit                      ;;
     "q")    exit                      ;;
