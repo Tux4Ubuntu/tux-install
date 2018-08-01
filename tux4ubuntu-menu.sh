@@ -13,15 +13,22 @@ cd "$(dirname "$0")"
 set -e
 # Cleans the screen
 printf "\033c"
+
 # Set global values
+VERSION="2.0";
 STEPCOUNTER=false # Changes to true if user choose to install Tux Everywhere
 OS_VERSION="";
 TEMP_DIR="";
+YELLOW='\033[1;33m'
+LIGHT_GREEN='\033[1;32m'
+LIGHT_RED='\033[1;31m'
+NC='\033[0m' # No Color
 
 # Define functions first
 function change_boot_loader {
     # Local/Github folder (comment out the other one if you're working locally)
     #$TEMP_DIR/tux-refind-theme-master/install.sh $1
+    echo "$1"
     ~/Projects/Tux4Ubuntu/src/tux-refind-theme/install.sh $1
 }
 
@@ -38,8 +45,9 @@ function change_desktop {
 }
 
 function change_wallpaper {
-    printf "\033c"
-    header "Adding Tux's WALLPAPER COLLECTION" "$1"
+    #printf "\033c"
+    echo "$1"
+    header "Add TUX's WALLPAPER COLLECTION" "$1"
     gh_repo="tux4ubuntu-wallpapers"
     echo "This will download Tux 4K wallpapers selection (400+ mb)."
     echo "Ready to do this?"
@@ -73,7 +81,7 @@ function change_wallpaper {
                 sudo mv /tmp/$gh_repo-master/* ~/$pictures_folder/"Tux4Ubuntu Wallpapers"
                 sudo chown -R $USER: $HOME
                 printf "\033c"
-                header "Adding Tux's WALLPAPER COLLECTION" "$1"
+                header "Add TUX's WALLPAPER COLLECTION" "$1"
                 echo "Finished downloading and adding wallpapers."
                 echo ""
                 echo "Once you press any key 'Appearance'-settings will open, then it's up to you to:"
@@ -87,11 +95,11 @@ function change_wallpaper {
                 read -n1 -r -p "Press any key to open settings right now..." key
                 unity-control-center appearance
                 printf "\033c"
-                header "Adding Tux's WALLPAPER COLLECTION" "$1"
+                header "Add TUX's WALLPAPER COLLECTION" "$1"
                 echo "Successfully added Tux's selection of wallpapers."
                 break;;
             No ) printf "\033c"
-                header "Adding Tux's WALLPAPER COLLECTION" "$1"
+                header "Add TUX's WALLPAPER COLLECTION" "$1"
                 echo "Tux stares at you with a curious look... Then he smiles and says 'Ok'."
                 break;;
         esac
@@ -102,7 +110,7 @@ function change_wallpaper {
 
 function install_games {
     printf "\033c"
-    header "Adding Tux GAMES" "$1"
+    header "Add TUX GAMES" "$1"
     echo "This will install the following classic Tux games:"
     echo "  - SuperTux                          (A lot like Super Mario)"
     echo "  - SuperTuxKart                      (A lot like Mario Kart)"
@@ -118,13 +126,13 @@ function install_games {
         case $yn in
             Yes ) 
                 printf "\033c"
-                header "Adding Tux GAMES" "$1"
+                header "Add TUX GAMES" "$1"
                 echo "Initiating Tux Games install..."
                 install_if_not_found "supertux supertuxkart extremetuxracer freedroidrpg warmux"
                 echo "Successfully installed the Tux Games."
                 break;;
             No ) printf "\033c"
-                header "Adding Tux GAMES" "$1"
+                header "Add TUX GAMES" "$1"
                 echo "The sound of Tux flapping with his feets slowly turns silent when he realizes" 
                 echo "your response... He shrugs and answer with a lowly voice 'ok'."
                 break;;
@@ -167,10 +175,8 @@ function uninstall {
         clear
         printf "\033c"
         # Menu system as found here: http://stackoverflow.com/questions/20224862/bash-script-always-show-menu-after-loop-execution
-        RED='\033[0;31m'
-        NC='\033[0m' # No Color
         printf "╔══════════════════════════════════════════════════════════════════════════════╗\n"
-        printf "║ ${RED}TUX 4 UBUNTU - UNINSTALL${NC}                        © 2016 Tux4Ubuntu Initiative ║\n"                       
+        printf "║ ${LIGHT_RED}TUX 4 UBUNTU - UNINSTALL${NC}                        © 2016 Tux4Ubuntu Initiative ║\n"                       
         printf "║ Let's Pause Tux a Bit                         http://tux4ubuntu.blogspot.com ║\n"
         printf "╠══════════════════════════════════════════════════════════════════════════════╣\n"
         cat<<EOF    
@@ -362,9 +368,7 @@ function check_sudo {
     if sudo -n true 2>/dev/null; then 
         :
     else
-        echo "Oh, and Tux will need sudo rights to copy and install everything, so he'll ask" 
-        echo "about that soon."
-        echo ""
+        printf "${YELLOW}Oh, TUX will ask below about sudo rights to copy and install everything...${NC}\n\n"
     fi
 }
 
@@ -423,10 +427,10 @@ function header {
     ch=' '
     echo "╔══════════════════════════════════════════════════════════════════════════════╗"
     printf "║"
-    printf " $1"
+    printf " ${YELLOW}$1${NC}"
     printf '%*s' "$len" | tr ' ' "$ch"
     if [ $STEPCOUNTER = true ]; then
-        printf "Step "$2
+        printf "Step "${LIGHT_GREEN}$2${NC}
         printf "/7 "
     fi
     printf "║\n"
@@ -442,7 +446,7 @@ TEMP_DIR="$1"
 header "Setting up INSTALLATION"
 echo "Are you running UBUNTU and the lastest LTS release UBUNTU 18.04?"
 echo "(if not LTS, google the advantages of using the latest LTS for production use)"
-
+echo ""
 select yn in "Yes" "No"; do
     case $yn in
         Yes ) printf "\033c"
@@ -468,13 +472,13 @@ while :
 do
     clear
     # Menu system as found here: http://stackoverflow.com/questions/20224862/bash-script-always-show-menu-after-loop-execution
+    printf "╔══════════════════════════════════════════════════════════════════════════════╗\n"
+    printf "║ ${YELLOW}TUX 4 UBUNTU ver $VERSION${NC}                                       © 2018 Tux4Ubuntu ║\n"                       
+    printf "║ Let's Bring Tux to Ubuntu                             https://tux4ubuntu.org ║\n"
+    printf "╠══════════════════════════════════════════════════════════════════════════════╣\n"
     cat<<EOF    
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ TUX 4 UBUNTU ver 2.0                                       © 2018 Tux4Ubuntu ║
-║ Let's Bring Tux to Ubuntu                             https://tux4ubuntu.org ║
-╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
-║   Where do you want Tux? (Type in one of the following numbers)              ║
+║   Where do you want Tux? (Type in one of the following numbers/letters)      ║
 ║                                                                              ║
 ║   1) Everywhere                                - Install all of the below    ║
 ║   ------------------------------------------------------------------------   ║
@@ -513,7 +517,7 @@ EOF
     "4")    change_desktop ;;
     "5")    change_wallpaper ;;
     "6")    install_games ;;
-    "8")    goto_tux4ubuntu_org ;;
+    "7")    goto_tux4ubuntu_org ;;
     "9")    uninstall ;;
     "Q")    exit                      ;;
     "q")    exit                      ;;
