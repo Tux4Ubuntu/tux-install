@@ -44,7 +44,8 @@ done
 printf "${YELLOW}=> Requesting TUX 4 UBUNTU for download counting...${NC}\n"
 wget -qO- https://tux4ubuntu.org/install-counter/ &> /dev/null
 
-echo "=> Launching installer..."
+printf "${YELLOW}=> Launching installer...${NC}\n" 
+sleep 1
 
 # LOCAL/GITHUB FOLDER
 #$temp_dir/tux-install-master/tux4ubuntu-menu.sh $temp_dir

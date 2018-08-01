@@ -45,67 +45,9 @@ function change_desktop {
 }
 
 function change_wallpaper {
-    #printf "\033c"
-    echo "$1"
-    header "Add TUX's WALLPAPER COLLECTION" "$1"
-    gh_repo="tux4ubuntu-wallpapers"
-    echo "This will download Tux 4K wallpapers selection (400+ mb)."
-    echo "Ready to do this?"
-    echo ""
-    check_sudo
-    echo "(Type 1 or 2, then press ENTER)"
-    select yn in "Yes" "No"; do
-        case $yn in
-            Yes ) 
-                echo "Initiating download..."
-                
-                # To configure dconf we need to run as su, and then lightdm. 
-                # But first we put it in tmp for easier access
-                
-                # Uncomment this and comment the other for faster downloading when developing
-                #gh_repo="tux4ubuntu"
-                gh_repo="tux4ubuntu-wallpapers"
-                pic_temp_dir=$(mktemp -d)
-                echo "=> Getting the latest version from GitHub ..."
-                wget -O "/tmp/$gh_repo.tar.gz" \
-                https://github.com/tuxedojoe/$gh_repo/archive/master.tar.gz
-                echo "=> Unpacking archive ..."
-                sudo tar -xzf "/tmp/$gh_repo.tar.gz" -C /tmp
-                sudo chmod -R ug+rw /tmp/$gh_repo-master/*
-                # Add Pictures to locale folder
-                prefix="\$HOME/"                
-                pictures_var=$(cat $HOME/.config/user-dirs.dirs | grep "XDG_PICTURES_DIR")
-                pictures_folder_uncut=$(echo ${pictures_var/XDG_PICTURES_DIR=/""} | tr -d '"')
-                pictures_folder=${pictures_folder_uncut#$prefix}
-                mkdir -p ~/$pictures_folder/"Tux4Ubuntu Wallpapers"
-                sudo mv /tmp/$gh_repo-master/* ~/$pictures_folder/"Tux4Ubuntu Wallpapers"
-                sudo chown -R $USER: $HOME
-                printf "\033c"
-                header "Add TUX's WALLPAPER COLLECTION" "$1"
-                echo "Finished downloading and adding wallpapers."
-                echo ""
-                echo "Once you press any key 'Appearance'-settings will open, then it's up to you to:"
-                echo "1. Click '+'"
-                echo "2. Double-click on 'Tux4Ubuntu Wallpapers'"
-                echo "3. Find a wallpaper of choice"
-                echo "4. Click 'Open'"
-                echo ""
-                echo "IMPORTANT: Close the 'Appearance'-window to continue installation."
-                echo ""
-                read -n1 -r -p "Press any key to open settings right now..." key
-                unity-control-center appearance
-                printf "\033c"
-                header "Add TUX's WALLPAPER COLLECTION" "$1"
-                echo "Successfully added Tux's selection of wallpapers."
-                break;;
-            No ) printf "\033c"
-                header "Add TUX's WALLPAPER COLLECTION" "$1"
-                echo "Tux stares at you with a curious look... Then he smiles and says 'Ok'."
-                break;;
-        esac
-    done
-    echo ""
-    read -n1 -r -p "Press any key to continue..." key
+    # Local/Github folder (comment out the other one if you're working locally)
+    #$TEMP_DIR/tux-wallpapers-master/install.sh $1
+    ~/Projects/Tux4Ubuntu/src/tux-wallpapers/install.sh $1
 }
 
 function install_games {
@@ -378,7 +320,7 @@ function install_if_not_found {
         if dpkg --get-selections | grep -q "^$pkg[[:space:]]*install$" >/dev/null; then
             echo -e "$pkg is already installed"
         else
-            echo "Installing $pkg."
+            printf "${YELLOW}Installing $pkg.${NC}\n"
             if sudo apt-get -qq --allow-unauthenticated install $pkg; then
                 echo "Successfully installed $pkg"
             else
@@ -443,8 +385,8 @@ function header {
 
 TEMP_DIR="$1"
 
-header "Setting up INSTALLATION"
-echo "Are you running UBUNTU and the lastest LTS release UBUNTU 18.04?"
+header "TUX 4 UBUNTU REQUIREMENTS"
+printf "Are you running ${LIGHT_GREEN}UBUNTU${NC} and the lastest LTS release ${LIGHT_GREEN}18.04${NC}?\n"
 echo "(if not LTS, google the advantages of using the latest LTS for production use)"
 echo ""
 select yn in "Yes" "No"; do
@@ -455,12 +397,23 @@ select yn in "Yes" "No"; do
             OS_VERSION="18.04"
             break;;
         No ) printf "\033c"
-            header "Tux suggests the MANUAL INSTALLATION method" "$1"
-            echo "If you're not running the latest UBUNTU LTS or if you're running another Linux"
-            echo "based OS you're not out of luck (TUX loves you!)"
-            echo ""
-            echo "Just read the manual install instructions at:"
-            echo "https://tux4ubuntu.org"
+            header "TUX 4 UBUNTU REQUIREMENTS" "$1"
+            printf "Looks like you can't use this installer. But hey, ${LIGHT_GREEN}YOU'RE NOT OUT OF LUCK!${NC}\n"
+            printf "We've created ${LIGHT_GREEN}MANUAL GUIDES${NC} that might help.\n"
+            printf "${YELLOW}"
+cat << "EOF"
+
+                                      .--.      
+                                     |o_o |   
+                                     |:_/ |            
+                                    //   \ \                
+                                   (|     | )       
+                                  /'\_   _/`\                
+                                  \___)=(___/                
+
+EOF
+            printf "${NC}\n"
+            printf "                            ${LIGHT_GREEN}https://tux4ubuntu.org${NC}\n"
             echo ""
             read -n1 -r -p "Press any key to continue..." key
             exit
@@ -480,14 +433,13 @@ do
 ║                                                                              ║
 ║   Where do you want Tux? (Type in one of the following numbers/letters)      ║
 ║                                                                              ║
-║   1) Everywhere                                - Install all of the below    ║
+║   A) All places possible                       - Install all of the below    ║
 ║   ------------------------------------------------------------------------   ║
-║   2) Boot Loader                               - Themes OS selection at boot ║
-║   3) Boot Logo                                 - Install Plymouth theme      ║
-║   4) Desktop Theme/Icons/Cursors               - Some class to your desktop  ║
-║   5) Wallpapers                                - Adds Tux favourite images   ║
-║   6) Games                                     - Install games feat. Tux     ║
-║   7) On my belly!                              - Buy the t-shirt             ║
+║   1) Boot Logo                                 - Install Plymouth theme      ║
+║   2) Desktop Theme/Icons/Cursors               - Some class to your desktop  ║
+║   3) Wallpapers                                - Adds Tux favourite images   ║
+║   4) Games                                     - Install games feat. Tux     ║
+║   5) Boot Loader                               - Themes OS selection at boot ║
 ║   ------------------------------------------------------------------------   ║
 ║   D) Developer Tools                           - See/install Tux's Devtools  ║
 ║   ------------------------------------------------------------------------   ║
@@ -497,11 +449,9 @@ do
 EOF
     read -n1 -s
     case "$REPLY" in
-    "1")    # Install everything
+    "A")    # Install everything
             STEPCOUNTER=true
             i=1
-            change_boot_loader $i
-            ((i++))
             change_boot_logo $i
             ((i++))
             change_desktop $i
@@ -510,15 +460,26 @@ EOF
             ((i++))
             install_games $i
             ((i++))
-            goto_tux4ubuntu_org $i
-            ;;
-    "2")    change_boot_loader ;;
-    "3")    change_boot_logo ;;
-    "4")    change_desktop ;;
-    "5")    change_wallpaper ;;
-    "6")    install_games ;;
-    "7")    goto_tux4ubuntu_org ;;
-    "9")    uninstall ;;
+            change_boot_loader $i
+            ((i++))
+    "a")    # Install everything
+            STEPCOUNTER=true
+            i=1
+            change_boot_logo $i
+            ((i++))
+            change_desktop $i
+            ((i++))
+            change_wallpaper $i
+            ((i++))
+            install_games $i
+            ((i++))
+            change_boot_loader $i
+            ((i++))
+    "1")    change_boot_logo ;;
+    "2")    change_desktop ;;
+    "3")    change_wallpaper ;;
+    "4")    install_games ;;
+    "5")    change_boot_loader ;;
     "Q")    exit                      ;;
     "q")    exit                      ;;
      * )    echo "invalid option"     ;;
