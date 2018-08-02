@@ -27,332 +27,32 @@ NC='\033[0m' # No Color
 # Define functions first
 function change_boot_loader {
     # Local/Github folder (comment out the other one if you're working locally)
-    #$TEMP_DIR/tux-refind-theme-master/install.sh $1
-    echo "$1"
-    ~/Projects/Tux4Ubuntu/src/tux-refind-theme/install.sh $1
+    $TEMP_DIR/tux-refind-theme-master/install.sh $1
+    #~/Projects/Tux4Ubuntu/src/tux-refind-theme/install.sh $1
 }
 
 function change_boot_logo {
     # Local/Github folder (comment out the other one if you're working locally)
-    #$TEMP_DIR/tux-plymouth-theme-master/install.sh $1
-    ~/Projects/Tux4Ubuntu/src/tux-plymouth-theme/install.sh $1
+    $TEMP_DIR/tux-plymouth-theme-master/install.sh $1
+    #~/Projects/Tux4Ubuntu/src/tux-plymouth-theme/install.sh $1
 }
 
 function change_desktop {
     # Local/Github folder (comment out the other one if you're working locally)
-    #$TEMP_DIR/tux-desktop-theme-master/install.sh $1
-    ~/Projects/Tux4Ubuntu/src/tux-desktop-theme/install.sh $1
+    $TEMP_DIR/tux-desktop-theme-master/install.sh $1
+    #~/Projects/Tux4Ubuntu/src/tux-desktop-theme/install.sh $1
 }
 
 function change_wallpaper {
     # Local/Github folder (comment out the other one if you're working locally)
-    #$TEMP_DIR/tux-wallpapers-master/install.sh $1
-    ~/Projects/Tux4Ubuntu/src/tux-wallpapers/install.sh $1
+    $TEMP_DIR/tux-wallpapers-master/install.sh $1
+    #~/Projects/Tux4Ubuntu/src/tux-wallpapers/install.sh $1
 }
 
 function install_games {
-    printf "\033c"
-    header "Add TUX GAMES" "$1"
-    echo "This will install the following classic Tux games:"
-    echo "  - SuperTux                          (A lot like Super Mario)"
-    echo "  - SuperTuxKart                      (A lot like Mario Kart)"
-    echo "  - Extreme Tux Racer                 (Help Tux slide down slopes)"
-    echo "  - FreedroidRPG                      (Sci-fi isometric role playing)"
-    echo "  - WarMUX                            (A lot like Worms)"
-    echo ""
-    check_sudo
-    echo "Ready to try some gaming with The Tux!?"
-    echo ""
-    echo "(Type 1 or 2, then press ENTER)"
-    select yn in "Yes" "No"; do
-        case $yn in
-            Yes ) 
-                printf "\033c"
-                header "Add TUX GAMES" "$1"
-                echo "Initiating Tux Games install..."
-                install_if_not_found "supertux supertuxkart extremetuxracer freedroidrpg warmux"
-                echo "Successfully installed the Tux Games."
-                break;;
-            No ) printf "\033c"
-                header "Add TUX GAMES" "$1"
-                echo "The sound of Tux flapping with his feets slowly turns silent when he realizes" 
-                echo "your response... He shrugs and answer with a lowly voice 'ok'."
-                break;;
-        esac
-    done
-    echo ""
-    read -n1 -r -p "Press any key to continue..." key
-}
-
-function goto_tux4ubuntu_org {
-    echo ""
-    echo "Launching website in your favourite browser."
-    x-www-browser https://tux4ubuntu.org/ &
-    read -n1 -r -p "Press any key to continue..." key
-    echo ""
-}
-
-function temp_uninstall {
-    printf "\033c"
-    header "UNINSTALLING Tux" "$1"
-    echo "We're working on it! See/help at http://github.com/tuxedojoe/tux4ubuntu"
-    echo ""
-    echo "But for now, check out the website under corresponding subjects. For instance"
-    echo "on 'Tux Boot Loader Theme for Ubuntu' you'll find reverse instructions on how to"
-    echo "uninstall it. We're sad to see you go, and sorry for the unconvince for no "
-    echo "working uninstaller at the moment. But as we said, we're working on it."
-    echo ""
-    read -n1 -r -p "Press any key to open website..." key
-    printf "\033c"
-    header "UNINSTALLING Tux" "$1"
-    echo "Launching website in your favourite browser."
-    x-www-browser https://tux4ubuntu.blogspot.com/;
-    echo ""
-    read -n1 -r -p "Press any key to continue..." key
-}
-
-function uninstall {
-    while :
-    do
-        clear
-        printf "\033c"
-        # Menu system as found here: http://stackoverflow.com/questions/20224862/bash-script-always-show-menu-after-loop-execution
-        printf "╔══════════════════════════════════════════════════════════════════════════════╗\n"
-        printf "║ ${LIGHT_RED}TUX 4 UBUNTU - UNINSTALL${NC}                        © 2016 Tux4Ubuntu Initiative ║\n"                       
-        printf "║ Let's Pause Tux a Bit                         http://tux4ubuntu.blogspot.com ║\n"
-        printf "╠══════════════════════════════════════════════════════════════════════════════╣\n"
-        cat<<EOF    
-║                                                                              ║
-║   Where do you want to remove Tux? (Type in one of the following numbers)    ║
-║                                                                              ║
-║   1) Everywhere                                - Uninstall all of the below  ║
-║   ------------------------------------------------------------------------   ║
-║   2) Boot Loader                               - Themes OS selection at boot ║
-║   3) Boot Logo                                 - Remove Plymouth theme       ║
-║   4) Login Screen                              - Add grid and wallpaper      ║
-║   5) Desktop Theme/Icons/Cursors/Fonts + Tux   - Remove Tux desktop theming  ║
-║   6) Wallpapers                                - Remove Tux favourite images ║
-║   7) Games                                     - Uninstall games feat. Tux   ║
-║   8) Return the t-shirt                        - Return your t-shirt         ║
-║   ------------------------------------------------------------------------   ║
-║   9) Back to installing Tux                    - Goes back to installer      ║
-║   ------------------------------------------------------------------------   ║
-║   Q) I'm done                                  - Quit the installer (Ctrl+C) ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-EOF
-        read -n1 -s
-        case "$REPLY" in
-        "1")    # Uninstall everything
-                STEPCOUNTER=true
-                i=1
-                uninstall_boot_loader $i
-                ((i++))
-                uninstall_boot_logo $i
-                ((i++))
-                uninstall_login_screen $i
-                ((i++))
-                uninstall_desktop $i
-                ((i++))
-                uninstall_wallpaper $i
-                ((i++))
-                uninstall_games $i
-                ((i++))
-                return_the_tshirt $i
-                ;;
-        "2")    uninstall_boot_loader ;;
-        "3")    uninstall_boot_logo ;;
-        "4")    uninstall_login_screen ;;
-        "5")    uninstall_desktop ;;
-        "6")    uninstall_wallpaper ;;
-        "7")    uninstall_games ;;
-        "8")    return_the_tshirt ;;
-        "9")    break ;;
-        "Q")    exit                      ;;
-        "q")    exit                      ;;
-        * )    echo "invalid option"     ;;
-        esac
-        sleep 1
-    done
-}
-
-function uninstall_login_screen {
-    printf "\033c"
-    header "Removing the tuxedo class to your LOGIN SCREEN" "$1"
-    echo "This will enable the standard Ubuntu background and the grid with dots on your"
-    echo "login screen. Ready to do this?"
-    echo ""
-    echo "(Type 1 or 2, then press ENTER)"
-    select yn in "Yes" "No"; do
-        case $yn in
-            Yes ) 
-                echo "Starting configure dconf login settings..."
-                mkdir -p /tmp/reclutter
-
-                sudo cp tux-login-reclutter/tux-login-gsettings.sh /tmp/reclutter/
-                # Make it executable by all so that lightdm can run it
-                sudo chmod 0755 /tmp/reclutter/tux-login-gsettings.sh
-                # As already mentioned, we need to do it as su, otherwise changes don't take effect
-                sudo bash tux-login-reclutter/tux-login-script.sh 
-                # Now we can remove the script from tmp
-                sudo rm -r /tmp/reclutter
-                printf "\033c"
-                header "Removing the tuxedo class to your LOGIN SCREEN" "$1"
-                echo "Successfully recluttered your Login Screen. :)"
-                break;;
-            No ) printf "\033c"
-                header "Removing the tuxedo class to your LOGIN SCREEN" "$1"
-                echo "Awesome! Tux smiles and gives you a pat on the shoulder."
-                break;;
-        esac
-    done
-    echo ""
-    read -n1 -r -p "Press any key to continue..." key
-}
-
-function uninstall_wallpaper {
-    printf "\033c"
-    header "Removing Tux's WALLPAPER COLLECTION" "$1"
-    gh_repo="tux4ubuntu-wallpapers"
-    echo "This will remove all Tux 4K wallpapers."
-    echo "Ready to do this?"
-    echo ""
-    echo "(Type 1 or 2, then press ENTER)"
-    select yn in "Yes" "No"; do
-        case $yn in
-            Yes ) 
-                echo "Starting to delete..."
-                # Added locale dependent Pictures folder
-                prefix="\$HOME/"                
-                pictures_var=$(cat $HOME/.config/user-dirs.dirs | grep "XDG_PICTURES_DIR")
-                pictures_folder_uncut=$(echo ${pictures_var/XDG_PICTURES_DIR=/""} | tr -d '"')
-                pictures_folder=${pictures_folder_uncut#$prefix}
-                sudo rm -rf ~/$pictures_folder/Tux4Ubuntu\ Wallpapers
-
-                printf "\033c"
-                header "Removing Tux's WALLPAPER COLLECTION" "$1"
-                echo "Successfully removed the Tux's wallpapers."
-                break;;
-            No ) printf "\033c"
-                header "Removing Tux's WALLPAPER COLLECTION" "$1"
-                echo "Tux stares at you with a curious look... Then he smiles and says 'Ok'."
-                break;;
-        esac
-    done
-    echo ""
-    read -n1 -r -p "Press any key to continue..." key
-}
-
-function uninstall_games {
-    printf "\033c"
-    header "Removing Tux GAMES" "$1"
-    echo "This will ask to uninstall the following classic Tux games:"
-    echo "  - SuperTux                          (A lot like Super Mario)"
-    echo "  - SuperTuxKart                      (A lot like Mario Kart)"
-    echo "  - ExtremeTuxRacer                   (Help Tux slide down slopes)"
-    echo "  - FreedroidRPG                      (Sci-fi isometric role playing)"
-    echo "  - WarMUX                            (A lot like Worms)"
-    echo ""
-    check_sudo
-    echo "Ready to start deleting them?"
-    echo ""
-    echo "(Type 1 or 2, then press ENTER)"
-    select yn in "Yes" "No"; do
-        case $yn in
-            Yes ) 
-                printf "\033c"
-                header "Removing Tux GAMES" "$1"
-                echo "Initiating Tux Games uninstall..."
-                uninstall_if_found "supertux supertuxkart extremetuxracer freedroidrpg warmux"
-                sudo apt -y autoremove
-                echo "Successfully uninstalled the Tux Games."
-                break;;
-            No ) printf "\033c"
-                header "Removing Tux GAMES" "$1"
-                echo "The sound of Tux flapping with his feets slowly turns silent when he realizes" 
-                echo "your response... He shrugs and answer with a lowly voice 'ok'."
-                break;;
-        esac
-    done
-    echo ""
-    read -n1 -r -p "Press any key to continue..." key
-}
-
-function return_the_tshirt {
-    printf "\033c"
-    header "Return the T-SHIRT" "$1"
-    # Original T-shirt art by Joan Stark found here: http://www.ascii-code.com/ascii-art/clothing-and-accessories/shirts.php
-    # Tux painted by ppa package 'cowsay'
-cat << "EOF"
-                             .-""`'-..____..-'`""-.            
-                           /`\                    /`\          
-                          /`  |                  |  `\         
-                         /`   |       .--.       |   `\        
-                        /     |      |o_o |      |     \       
-                        '-.__.|      |:_/ |      |.___.-'            
-                              |     //   \ \     |            
-                              |    (|     | )    |    
-                              |   /'\_   _/`\    |             
-                              |   \___)=(___/    |             
-                              |                  |                     
-                              |                  |             
-                              '._              _.'             
-                                 `""--------""`                
-EOF
-    echo ""
-    echo "Launching website in your favourite browser."
-    x-www-browser https://tux4ubuntu.blogspot.com/p/web-shop.html &
-    read -n1 -r -p "Press any key to continue..." key
-    echo ""
-}
-
-function check_sudo {
-    if sudo -n true 2>/dev/null; then 
-        :
-    else
-        printf "${YELLOW}Oh, TUX will ask below about sudo rights to copy and install everything...${NC}\n\n"
-    fi
-}
-
-function install_if_not_found { 
-    # As found here: http://askubuntu.com/questions/319307/reliably-check-if-a-package-is-installed-or-not
-    for pkg in $1; do
-        if dpkg --get-selections | grep -q "^$pkg[[:space:]]*install$" >/dev/null; then
-            echo -e "$pkg is already installed"
-        else
-            printf "${YELLOW}Installing $pkg.${NC}\n"
-            if sudo apt-get -qq --allow-unauthenticated install $pkg; then
-                echo "Successfully installed $pkg"
-            else
-                echo "Error installing $pkg"
-            fi        
-        fi
-    done
-}
-
-function uninstall_if_found { 
-    # As found here: http://askubuntu.com/questions/319307/reliably-check-if-a-package-is-installed-or-not
-    for pkg in $1; do
-        if dpkg --get-selections | grep -q "^$pkg[[:space:]]*install$" >/dev/null; then
-            echo "Uninstalling $pkg."
-            if sudo apt-get remove $pkg; then
-                echo "Successfully uninstalled $pkg"
-            else
-                echo "Error uninstalling $pkg"
-            fi        
-        else
-            echo -e "$pkg is not installed"
-        fi
-    done
-}
-
-function change_grub2_theme { 
-    # Install grub2 theme
-    echo "Copying tux-grub2-theme to /boot/grub/themes/"
-    sudo cp -r tux-grub2-theme /boot/grub/themes/
-    echo "Adding 'GRUB_THEME=/boot/grub/themes/tux-grub2-theme/theme.txt' to '/etc/default/grub'"
-    sudo grep -q -F 'GRUB_THEME="' /etc/default/grub || sudo sh -c "echo 'GRUB_THEME="/boot/grub/themes/tux-grub2-theme/theme.txt"' >> /etc/default/grub"
-    sudo grub-mkconfig -o /boot/grub/grub.cfg
+    # Local/Github folder (comment out the other one if you're working locally)
+    $TEMP_DIR/tux-games-master/install.sh $1
+    #~/Projects/Tux4Ubuntu/src/tux-games/install.sh $1
 }
 
 function header {
@@ -373,7 +73,7 @@ function header {
     printf '%*s' "$len" | tr ' ' "$ch"
     if [ $STEPCOUNTER = true ]; then
         printf "Step "${LIGHT_GREEN}$2${NC}
-        printf "/7 "
+        printf "/5 "
     fi
     printf "║\n"
     echo "╚══════════════════════════════════════════════════════════════════════════════╝"
@@ -461,7 +161,7 @@ EOF
             install_games $i
             ((i++))
             change_boot_loader $i
-            ((i++))
+            ((i++)) ;;
     "a")    # Install everything
             STEPCOUNTER=true
             i=1
@@ -474,7 +174,7 @@ EOF
             install_games $i
             ((i++))
             change_boot_loader $i
-            ((i++))
+            ((i++)) ;;
     "1")    change_boot_logo ;;
     "2")    change_desktop ;;
     "3")    change_wallpaper ;;
