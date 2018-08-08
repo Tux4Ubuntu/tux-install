@@ -45,6 +45,7 @@ function change_desktop {
 
 function change_wallpaper {
     # Local/Github folder (comment out the other one if you're working locally)
+    #~/Projects/Tux4Ubuntu/src/tux-wallpapers/install.sh $1
     printf "\033c"
     header "TUX WALLPAPERS" "$1"
     gh_repo="tux4ubuntu-wallpapers"
@@ -83,16 +84,6 @@ function change_wallpaper {
                 break;;
         esac
     done
-    echo ""
-    read -n1 -r -p "Press any key to continue..." key
-    exit
-
-
-
-
-
-
-    #~/Projects/Tux4Ubuntu/src/tux-wallpapers/install.sh $1
 }
 
 function install_games {
