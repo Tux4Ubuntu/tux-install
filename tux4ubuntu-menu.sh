@@ -126,6 +126,15 @@ function header {
     echo ""
 }
 
+function check_sudo {
+    if sudo -n true 2>/dev/null; then 
+        :
+    else
+        printf "Oh, TUX will ask below about sudo rights to copy and install everything...\n\n"
+    fi
+}
+
+
 
 # After all the above functions been set we're ready to run the scripts
 
