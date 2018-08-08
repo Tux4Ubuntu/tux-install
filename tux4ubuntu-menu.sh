@@ -45,7 +45,53 @@ function change_desktop {
 
 function change_wallpaper {
     # Local/Github folder (comment out the other one if you're working locally)
-    $TEMP_DIR/tux-wallpapers-master/install.sh $1
+    printf "\033c"
+    header "TUX WALLPAPERS" "$1"
+    gh_repo="tux4ubuntu-wallpapers"
+    printf "This will download TUX's selection of his favorite wallpapers mostly in 4K \nsolution (400+ mb).\n"
+    printf "${LIGHT_GREEN}Ready to do this?${NC}\n"
+    echo ""
+    check_sudo
+    echo "(Type 1 or 2, then press ENTER)"
+    select yn in "Yes" "No"; do
+        case $yn in
+            Yes )
+                printf "\033c"
+                header "TUX WALLPAPERS" "$1"
+                printf "${YELLOW}Initiating download...${NC}\n"
+
+                gh_repo="tux-wallpapers"
+                pic_temp_dir=$(mktemp -d)
+                printf "${YELLOW}Getting the latest version from GitHub...${NC}\n"
+                wget -O "$pic_temp_dir/$gh_repo.tar.gz" \
+                https://github.com/Tux4Ubuntu/$gh_repo/archive/master.tar.gz
+                printf "${YELLOW}Unpacking archive...${NC}\n"
+                sudo tar -xvpf "$pic_temp_dir/$gh_repo.tar.gz" -C $pic_temp_dir/ 2>&1 | 
+                while read line; do
+                    x=$((x+1))
+                    echo -en " $x TUX selfies extracted (he's just kidding, these are nice images)...\r"
+                done
+                sudo chmod -R ug+rw $pic_temp_dir/$gh_repo-master/*
+                $pic_temp_dir/tux-wallpapers-master/install.sh $1
+                printf "\033c"
+                header "TUX WALLPAPERS" "$1"
+                echo "Successfully added Tux's selection of wallpapers."
+                break;;
+            No ) printf "\033c"
+                header "TUX WALLPAPERS" "$1"
+                echo "TUX stares at you with a curious look... Then he smiles and says 'Ok'."
+                break;;
+        esac
+    done
+    echo ""
+    read -n1 -r -p "Press any key to continue..." key
+    exit
+
+
+
+
+
+
     #~/Projects/Tux4Ubuntu/src/tux-wallpapers/install.sh $1
 }
 
