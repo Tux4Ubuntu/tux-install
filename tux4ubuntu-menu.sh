@@ -18,7 +18,6 @@ printf "\033c"
 VERSION="2.0";
 STEPCOUNTER=false # Changes to true if user choose to install Tux Everywhere
 OS_VERSION="";
-TEMP_DIR="";
 YELLOW='\033[1;33m'
 LIGHT_GREEN='\033[1;32m'
 LIGHT_RED='\033[1;31m'
@@ -27,19 +26,19 @@ NC='\033[0m' # No Color
 # Define functions first
 function change_boot_loader {
     # Local/Github folder (comment out the other one if you're working locally)
-    $TEMP_DIR/tux-refind-theme-master/install.sh $1
+    ../tux-refind-theme-master/install.sh $1
     #~/Projects/Tux4Ubuntu/src/tux-refind-theme/install.sh $1
 }
 
 function change_boot_logo {
     # Local/Github folder (comment out the other one if you're working locally)
-    $TEMP_DIR/tux-plymouth-theme-master/install.sh $1
+    ../tux-plymouth-theme-master/install.sh $1
     #~/Projects/Tux4Ubuntu/src/tux-plymouth-theme/install.sh $1
 }
 
 function change_desktop {
     # Local/Github folder (comment out the other one if you're working locally)
-    $TEMP_DIR/tux-desktop-theme-master/install.sh $1
+    ../tux-desktop-theme-master/install.sh $1
     #~/Projects/Tux4Ubuntu/src/tux-desktop-theme/install.sh $1
 }
 
@@ -88,13 +87,13 @@ function change_wallpaper {
 
 function install_games {
     # Local/Github folder (comment out the other one if you're working locally)
-    $TEMP_DIR/tux-games-master/install.sh $1
+    ../tux-games-master/install.sh $1
     #~/Projects/Tux4Ubuntu/src/tux-games/install.sh $1
 }
 
 function devtools {
     # Local/Github folder (comment out the other one if you're working locally)
-    $TEMP_DIR/tux-devtools-master/install.sh $1
+    ../tux-devtools-master/install.sh $1
     #~/Projects/Tux4Ubuntu/src/tux-desktop-theme/install.sh $1
 }
 
