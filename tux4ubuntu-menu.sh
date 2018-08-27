@@ -178,7 +178,7 @@ do
     # Menu system as found here: http://stackoverflow.com/questions/20224862/bash-script-always-show-menu-after-loop-execution
     printf "╔══════════════════════════════════════════════════════════════════════════════╗\n"
     printf "║ ${YELLOW}TUX 4 UBUNTU ver $VERSION${NC}                                       © 2018 Tux4Ubuntu ║\n"                       
-    printf "║ Let's Bring TUX's Tools to Ubuntu                     https://tux4ubuntu.org ║\n"
+    printf "║ Let's Bring TUX to Ubuntu                              http://tux4ubuntu.org ║\n"
     printf "╠══════════════════════════════════════════════════════════════════════════════╣\n"
     cat<<EOF    
 ║                                                                              ║
