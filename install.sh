@@ -42,7 +42,7 @@ done
 
 # For counting downloads
 printf "${YELLOW}=> Requesting TUX 4 UBUNTU for download counting...${NC}\n"
-wget -qO- https://tux4ubuntu.org/install-counter/ &> /dev/null
+# wget -qO- https://tux4ubuntu.org/install-counter/ &> /dev/null
 
 printf "${YELLOW}=> Launching installer...${NC}\n" 
 sleep 1
