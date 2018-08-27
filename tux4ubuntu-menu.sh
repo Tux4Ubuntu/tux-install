@@ -92,6 +92,12 @@ function install_games {
     #~/Projects/Tux4Ubuntu/src/tux-games/install.sh $1
 }
 
+function devtools {
+    # Local/Github folder (comment out the other one if you're working locally)
+    $TEMP_DIR/tux-devtools-master/install.sh $1
+    #~/Projects/Tux4Ubuntu/src/tux-desktop-theme/install.sh $1
+}
+
 function header {
     var_size=${#1}
     # 80 is a full width set by us (to work in the smallest standard terminal window)
@@ -226,6 +232,8 @@ EOF
     "3")    change_wallpaper ;;
     "4")    install_games ;;
     "5")    change_boot_loader ;;
+    "D")    devtools ;;
+    "d")    devtools ;;
     "Q")    exit                      ;;
     "q")    exit                      ;;
      * )    echo "invalid option"     ;;
