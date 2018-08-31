@@ -63,6 +63,10 @@ function change_wallpaper {
                 gh_repo="tux-wallpapers"
                 # pic_temp_dir=$(mktemp -d)
                 printf "${YELLOW}Getting the latest version from GitHub...${NC}\n"
+
+                DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+                echo $DIR
+
                 wget -O "$gh_repo.tar.gz" \
                 https://github.com/Tux4Ubuntu/$gh_repo/archive/master.tar.gz
                 printf "${YELLOW}Unpacking archive...${NC}\n"
