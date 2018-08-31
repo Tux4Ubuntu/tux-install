@@ -66,7 +66,7 @@ function change_wallpaper {
                 wget -O "$gh_repo.tar.gz" \
                 https://github.com/Tux4Ubuntu/$gh_repo/archive/master.tar.gz
                 printf "${YELLOW}Unpacking archive...${NC}\n"
-                print pwd
+                echo pwd
                 sudo tar -xvpf "$gh_repo.tar.gz" -C / 2>&1 | 
                 while read line; do
                     x=$((x+1))
