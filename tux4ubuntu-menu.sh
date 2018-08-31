@@ -64,14 +64,14 @@ function change_wallpaper {
                 # pic_temp_dir=$(mktemp -d)
                 printf "${YELLOW}Getting the latest version from GitHub...${NC}\n"
 
-                DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+                cd DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
                 echo $DIR
 
                 wget -O "$gh_repo.tar.gz" \
                 https://github.com/Tux4Ubuntu/$gh_repo/archive/master.tar.gz
                 printf "${YELLOW}Unpacking archive...${NC}\n"
-                echo pwd
-                sudo tar -xvpf "$gh_repo.tar.gz" -C / 2>&1 | 
+                
+                sudo tar -xvpf tux-wallpapers.tar.gz -C / 2>&1 | 
                 while read line; do
                     x=$((x+1))
                     echo -en " $x TUX selfies extracted (he's just kidding, these are nice images)...\r"
