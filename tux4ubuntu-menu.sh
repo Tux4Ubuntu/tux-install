@@ -64,7 +64,7 @@ function change_wallpaper {
                 # pic_temp_dir=$(mktemp -d)
                 printf "${YELLOW}Getting the latest version from GitHub...${NC}\n"
 
-                cd DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+                DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
                 echo $DIR
 
                 wget -O "$gh_repo.tar.gz" \
