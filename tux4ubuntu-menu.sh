@@ -62,26 +62,38 @@ function change_wallpaper {
 
                 gh_repo="tux-wallpapers"
                 # pic_temp_dir=$(mktemp -d)
+
+                prefix="\$HOME/"                
+                pictures_var=$(cat $HOME/.config/user-dirs.dirs | grep "XDG_PICTURES_DIR")
+                pictures_folder_uncut=$(echo ${pictures_var/XDG_PICTURES_DIR=/""} | tr -d '"')
+                pictures_folder=${pictures_folder_uncut#$prefix}
+                
+
+
                 printf "${YELLOW}Getting the latest version from GitHub...${NC}\n"
 
                 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
                 echo $DIR
 
-                wget -O "$gh_repo.tar.gz" \
+                wget -O "$pictures_folder/$gh_repo.tar.gz" \
                 https://github.com/Tux4Ubuntu/$gh_repo/archive/master.tar.gz
                 printf "${YELLOW}Unpacking archive...${NC}\n"
                 
-                sudo tar -xvpf "tux-wallpapers.tar.gz" -C / 2>&1 | 
+                sudo tar -xvpf "tux-wallpapers.tar.gz" -C $pictures_folder/ 2>&1 | 
                 while read line; do
                     x=$((x+1))
                     echo -en " $x TUX selfies extracted (he's just kidding, these are nice images)...\r"
                 done
-                sudo chmod -R ug+rw $gh_repo-master/*
+                sudo chmod -R ug+rw $pictures_folder/$gh_repo-master/*
                 
                 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
                 echo $DIR
 
-                tux-wallpapers-master/install.sh $1
+                $pictures_folder/tux-wallpapers-master/install.sh $1
+
+                sudo rm -rf $pictures_folder/tux-wallpapers-master
+                sudo rm $pictures_folder/tux-wallpapers.tar.gz
+                
                 # printf "\033c"
                 header "TUX WALLPAPERS" "$1"
                 echo "Successfully added Tux's selection of wallpapers."
