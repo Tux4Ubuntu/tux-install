@@ -12,7 +12,7 @@ cd "$(dirname "$0")"
 # Adds error handling by exiting at first error
 set -e
 # Cleans the screen
-printf "\033c"
+# printf "\033c"
 
 # Set global values
 VERSION="2.0";
@@ -45,7 +45,7 @@ function change_desktop {
 function change_wallpaper {
     # Local/Github folder (comment out the other one if you're working locally)
     #~/Projects/Tux4Ubuntu/src/tux-wallpapers/install.sh $1
-    printf "\033c"
+    # printf "\033c"
     header "TUX WALLPAPERS" "$1"
     gh_repo="tux4ubuntu-wallpapers"
     printf "This will download TUX's selection of his favorite wallpapers mostly in 4K \nsolution (400+ mb).\n"
@@ -56,7 +56,7 @@ function change_wallpaper {
     select yn in "Yes" "No"; do
         case $yn in
             Yes )
-                printf "\033c"
+                # printf "\033c"
                 header "TUX WALLPAPERS" "$1"
                 printf "${YELLOW}Initiating download...${NC}\n"
 
@@ -73,13 +73,16 @@ function change_wallpaper {
                     echo -en " $x TUX selfies extracted (he's just kidding, these are nice images)...\r"
                 done
                 sudo chmod -R ug+rw $gh_repo-master/*
-                echo pwd
+                
+                DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+                echo $DIR
+
                 tux-wallpapers-master/install.sh $1
-                printf "\033c"
+                # printf "\033c"
                 header "TUX WALLPAPERS" "$1"
                 echo "Successfully added Tux's selection of wallpapers."
                 break;;
-            No ) printf "\033c"
+            No ) # printf "\033c"
                 header "TUX WALLPAPERS" "$1"
                 echo "TUX stares at you with a curious look... Then he smiles and says 'Ok'."
                 break;;
@@ -144,12 +147,12 @@ echo "(if not LTS, google the advantages of using the latest LTS for production 
 echo ""
 select yn in "Yes" "No"; do
     case $yn in
-        Yes ) printf "\033c"
+        Yes ) # printf "\033c"
             # We set the plymouth directory here 
             plymouth_dir="/usr/share/plymouth"
             OS_VERSION="18.04"
             break;;
-        No ) printf "\033c"
+        No ) # printf "\033c"
             header "TUX 4 UBUNTU REQUIREMENTS" "$1"
             printf "Looks like you can't use this installer. But hey, ${LIGHT_GREEN}YOU'RE NOT OUT OF LUCK!${NC}\n"
             printf "We've created ${LIGHT_GREEN}MANUAL GUIDES${NC} that might help.\n"
