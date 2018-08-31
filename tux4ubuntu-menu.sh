@@ -75,15 +75,16 @@ function change_wallpaper {
                 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
                 echo $DIR
 
-                wget -O "~/$pictures_folder/$gh_repo.tar.gz" \
+                wget -O ~/$pictures_folder/$gh_repo.tar.gz \
                 https://github.com/Tux4Ubuntu/$gh_repo/archive/master.tar.gz
-                printf "${YELLOW}Unpacking archive...${NC}\n"
                 
-                sudo tar -xvpf "~/$pictures_folder/tux-wallpapers.tar.gz" -C $pictures_folder/ 2>&1 | 
+                printf "${YELLOW}Unpacking archive...${NC}\n"
+                sudo tar -xvpf ~/$pictures_folder/tux-wallpapers.tar.gz -C ~/$pictures_folder/ 2>&1 | 
                 while read line; do
                     x=$((x+1))
                     echo -en " $x TUX selfies extracted (he's just kidding, these are nice images)...\r"
                 done
+                printf "\n"
                 sudo chmod -R ug+rw ~/$pictures_folder/$gh_repo-master/*
                 
                 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
