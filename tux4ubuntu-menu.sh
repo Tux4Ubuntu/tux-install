@@ -71,7 +71,7 @@ function change_wallpaper {
                 https://github.com/Tux4Ubuntu/$gh_repo/archive/master.tar.gz
                 printf "${YELLOW}Unpacking archive...${NC}\n"
                 
-                sudo tar -xvpf tux-wallpapers.tar.gz -C / 2>&1 | 
+                sudo tar -xvpf "tux-wallpapers.tar.gz" -C / 2>&1 | 
                 while read line; do
                     x=$((x+1))
                     echo -en " $x TUX selfies extracted (he's just kidding, these are nice images)...\r"
