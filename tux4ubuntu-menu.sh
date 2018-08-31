@@ -61,18 +61,18 @@ function change_wallpaper {
                 printf "${YELLOW}Initiating download...${NC}\n"
 
                 gh_repo="tux-wallpapers"
-                pic_temp_dir=$(mktemp -d)
+                # pic_temp_dir=$(mktemp -d)
                 printf "${YELLOW}Getting the latest version from GitHub...${NC}\n"
-                wget -O "$pic_temp_dir/$gh_repo.tar.gz" \
+                wget -O "$gh_repo.tar.gz" \
                 https://github.com/Tux4Ubuntu/$gh_repo/archive/master.tar.gz
                 printf "${YELLOW}Unpacking archive...${NC}\n"
-                sudo tar -xvpf "$pic_temp_dir/$gh_repo.tar.gz" -C $pic_temp_dir/ 2>&1 | 
+                sudo tar -xvpf "$gh_repo.tar.gz" -C / 2>&1 | 
                 while read line; do
                     x=$((x+1))
                     echo -en " $x TUX selfies extracted (he's just kidding, these are nice images)...\r"
                 done
-                sudo chmod -R ug+rw $pic_temp_dir/$gh_repo-master/*
-                $pic_temp_dir/tux-wallpapers-master/install.sh $1
+                sudo chmod -R ug+rw $gh_repo-master/*
+                tux-wallpapers-master/install.sh $1
                 printf "\033c"
                 header "TUX WALLPAPERS" "$1"
                 echo "Successfully added Tux's selection of wallpapers."
