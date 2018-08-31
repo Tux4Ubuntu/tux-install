@@ -72,6 +72,7 @@ function change_wallpaper {
                     echo -en " $x TUX selfies extracted (he's just kidding, these are nice images)...\r"
                 done
                 sudo chmod -R ug+rw $gh_repo-master/*
+                echo pwd
                 tux-wallpapers-master/install.sh $1
                 printf "\033c"
                 header "TUX WALLPAPERS" "$1"
